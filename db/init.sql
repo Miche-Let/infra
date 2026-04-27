@@ -1,0 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS user_service;
+CREATE SCHEMA IF NOT EXISTS inventory_service;
+CREATE SCHEMA IF NOT EXISTS reservation_service;
+CREATE SCHEMA IF NOT EXISTS restaurant_service;
+CREATE SCHEMA IF NOT EXISTS waiting_service;
+CREATE SCHEMA IF NOT EXISTS notification_service;
+CREATE SCHEMA IF NOT EXISTS catalog_service;
+CREATE SCHEMA IF NOT EXISTS order_service;
+CREATE SCHEMA IF NOT EXISTS timeslot_service;

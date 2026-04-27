@@ -1,0 +1,60 @@
+name: michelet-app
+services:
+  eureka-server:
+    build:
+      context: ../eureka-server
+    container_name: eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    command:
+      - "--server.port=8761"
+      - "--eureka.instance.hostname=eureka-server"
+      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - michelet-network
+
+  user-service:
+    build:
+      context: ../user-service
+    container_name: user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    command:
+      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+    ports:
+      - "19100:19100"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - michelet-network
+
+  api-gateway:
+    build:
+      context: ../api-gateway
+    container_name: api-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    command:
+      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+    ports:
+      - "19000:19000"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+    networks:
+      - michelet-network
+
+networks:
+  michelet-network:
+    external: true
