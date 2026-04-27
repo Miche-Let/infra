@@ -3,4 +3,6 @@
 *.iml
 *.ipr
 
+.DS_Store
+
 *.env
