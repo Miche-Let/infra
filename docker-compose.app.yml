@@ -25,6 +25,8 @@ services:
     build:
       context: ../user-service
     container_name: user-service
+    env_file:
+      - ../user-service/.env
     environment:
       SPRING_PROFILES_ACTIVE: docker
     command:
