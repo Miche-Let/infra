@@ -26,7 +26,7 @@ services:
       context: ../user-service
     container_name: user-service
     env_file:
-      - ../user-service/.env
+      - .env
     environment:
       SPRING_PROFILES_ACTIVE: docker
     command:
@@ -43,6 +43,8 @@ services:
     build:
       context: ../api-gateway
     container_name: api-gateway
+    env_file:
+      - .env
     environment:
       SPRING_PROFILES_ACTIVE: docker
     command:
