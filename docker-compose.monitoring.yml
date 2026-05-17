@@ -12,14 +12,11 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
-      test: ["CMD", "wget", "-q", "--tries=1", "http://localhost:9090/-/healthy"]
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://localhost:9090/-/healthy"]
       interval: 10s
       timeout: 5s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 512m
+    mem_limit: 512m
     networks:
       - michelet-network
 
@@ -33,14 +30,11 @@ services:
     depends_on:
       - prometheus
     healthcheck:
-      test: ["CMD", "wget", "-q", "--tries=1", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://localhost:3000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 256m
+    mem_limit: 256m
     networks:
       - michelet-network
 
