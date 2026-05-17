@@ -39,6 +39,148 @@ services:
     networks:
       - michelet-network
 
+  restaurant-service:
+    build:
+      context: ../restaurant-service
+    container_name: restaurant-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 19300
+
+
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: restaurant-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+
+      FEIGN_RESERVATION_SERVICE_URL: http://reservation-service:19500
+
+      # 조회 API 부하테스트 중에는 체크인 Kafka Consumer 영향을 배제하기 위해 Listener 비활성화
+      SPRING_KAFKA_LISTENER_AUTO_STARTUP: "false"
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+    command:
+      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+      - "--eureka.instance.hostname=restaurant-service"
+      - "--eureka.instance.prefer-ip-address=false"
+    ports:
+      - "19300:19300"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - michelet-network
+#
+#  inventory-service:
+#    build:
+#      context: ../inventory-service
+#    container_name: inventory-service
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    command:
+#      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+#    ports:
+#      - "19900:19900"
+#    depends_on:
+#      eureka-server:
+#        condition: service_healthy
+#    networks:
+#      - michelet-network
+#
+#  catalog-service:
+#    build:
+#      context: ../catalog-service
+#    container_name: catalog-service
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    command:
+#      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+#    ports:
+#      - "19800:19800"
+#    depends_on:
+#      eureka-server:
+#        condition: service_healthy
+#    networks:
+#      - michelet-network
+#
+#  order-service:
+#    build:
+#      context: ../order-service
+#    container_name: order-service
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    command:
+#      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+#    ports:
+#      - "19700:19700"
+#    depends_on:
+#      eureka-server:
+#        condition: service_healthy
+#    networks:
+#      - michelet-network
+
+#  timeslot-service:
+#    build:
+#      context: ../timeslot-service
+#    container_name: timeslot-service
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    command:
+#      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+#    ports:
+#      - "19400:19400"
+#    depends_on:
+#      eureka-server:
+#        condition: service_healthy
+#    networks:
+#      - michelet-network
+
+#  waiting-service:
+#    build:
+#      context: ../waiting-service
+#    container_name: waiting-service
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    command:
+#      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+#    ports:
+#      - "19200:19200"
+#    depends_on:
+#      eureka-server:
+#        condition: service_healthy
+#    networks:
+#      - michelet-network
+
+#  reservation-service:
+#    build:
+#      context: ../reservation-service
+#    container_name: reservation-service
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#    command:
+#      - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
+#    ports:
+#      - "19500:19500"
+#    depends_on:
+#      eureka-server:
+#        condition: service_healthy
+#    networks:
+#      - michelet-network
+
   api-gateway:
     build:
       context: ../api-gateway
