@@ -49,9 +49,6 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 19300
 
-      DB_URL: jdbc:postgresql://db:5432/michelet_db
-      DB_USERNAME: admin
-      DB_PASSWORD: admin
 
       EUREKA_CLIENT_ENABLED: "true"
       EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
@@ -64,8 +61,6 @@ services:
       SPRING_KAFKA_LISTENER_AUTO_STARTUP: "false"
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
-      INTERNAL_AUTH_SECRET: michelet-internal-auth-secret-key-a8K2mQ9xLp4Vt7Rz1Nc
-      JWT_SECRET: michelet-secret-key-for-authentication-a8K2mQ9xLp4Vt7Rz1Nc
     command:
       - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
       - "--eureka.instance.hostname=restaurant-service"
