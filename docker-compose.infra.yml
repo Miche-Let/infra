@@ -58,12 +58,11 @@ services:
     networks:
       - michelet-network
 
-  # === Kafka & Zookeeper 추가 ===
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.3
     container_name: zookeeper
     ports:
-      - "2181:2181"
+      - "${ZOOKEEPER_PORT:-2181}:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -79,16 +78,16 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "${KAFKA_EXTERNAL_PORT:-9092}:9092"
     environment:
-      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID:-1}
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://${KAFKA_ADVERTISED_HOST:-localhost}:${KAFKA_EXTERNAL_PORT:-9092}
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m" # <--- 로컬 환경 메모리 제한 추가
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:-1}
+      KAFKA_HEAP_OPTS: ${KAFKA_HEAP_OPTS:--Xmx512m -Xms512m}
     networks:
       - michelet-network
 
@@ -96,10 +95,10 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8080:8080" # 웹 브라우저 접속 포트
+      - "${KAFKA_UI_PORT:-8080}:8080"
     restart: always
     environment:
-      - KAFKA_CLUSTERS_0_NAME=local-mac
+      - KAFKA_CLUSTERS_0_NAME=${KAFKA_UI_CLUSTER_NAME:-local}
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
     depends_on:
       - kafka
@@ -113,7 +112,10 @@ volumes:
     name: ${REDIS_VOLUME_NAME:-redis-data}
   mongo-data:
     name: ${MONGO_VOLUME_NAME:-mongo-data}
-
+  zookeeper-data:
+    name: ${ZOOKEEPER_DATA_VOLUME_NAME:-zookeeper-data}
+  zookeeper-log:
+    name: ${ZOOKEEPER_LOG_VOLUME_NAME:-zookeeper-log}
 
 networks:
   michelet-network:

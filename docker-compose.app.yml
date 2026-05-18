@@ -55,11 +55,12 @@ services:
       EUREKA_INSTANCE_HOSTNAME: restaurant-service
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
 
-      FEIGN_RESERVATION_SERVICE_URL: http://reservation-service:19500
+      FEIGN_RESERVATION_SERVICE_URL: ${FEIGN_RESERVATION_SERVICE_URL:-http://reservation-service:19500}
 
       # 조회 API 부하테스트 중에는 체크인 Kafka Consumer 영향을 배제하기 위해 Listener 비활성화
-      SPRING_KAFKA_LISTENER_AUTO_STARTUP: "false"
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_LISTENER_AUTO_STARTUP: ${SPRING_KAFKA_LISTENER_AUTO_STARTUP:-true}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:29092}
+      KAFKA_TOPIC_RESERVATION_CHECK_IN_COMPLETED: ${KAFKA_TOPIC_RESERVATION_CHECK_IN_COMPLETED:-reservation.checked-in}
 
     command:
       - "--eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/"
