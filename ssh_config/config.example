@@ -1,0 +1,10 @@
+Host bastion
+  HostName {bastion IP}
+  User ubuntu
+  IdentityFile {bastion key 위치}
+
+Host infra
+  HostName {infra IP}
+  User ubuntu
+  IdentityFile {infra key 위치}
+  ProxyJump bastion
